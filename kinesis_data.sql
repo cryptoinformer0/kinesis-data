@@ -23,8 +23,8 @@ CREATE TABLE kag_txns (
 -- Biggest senders
 SELECT
   from_address,
-  ROUND(SUM(amount)::NUMERIC, 2) AS amount,
-  ROUND(SUM(fee)::NUMERIC, 2) AS fee,
+  SUM(amount) AS amount,
+  SUM(fee) AS fee,
   COUNT(*) AS txn_count,
   ROUND(SUM(amount)::NUMERIC / COUNT(*), 2) AS avg_txn_amount,
   COUNT(DISTINCT(to_address)) AS unique_to_address_count
@@ -35,8 +35,8 @@ ORDER BY 2 DESC;
 -- Biggest receivers
 SELECT
   to_address,
-  ROUND(SUM(amount)::NUMERIC, 2) AS amount,
-  ROUND(SUM(fee)::NUMERIC, 2) AS fee,
+  SUM(amount) AS amount,
+  SUM(fee) AS fee,
   COUNT(*) AS txn_count,
   ROUND(SUM(amount)::NUMERIC / COUNT(*), 2) AS avg_txn_amount,
   COUNT(DISTINCT(from_address)) AS unique_from_address_count
@@ -48,8 +48,8 @@ ORDER BY 2 DESC;
 WITH sent_amounts AS (
   SELECT
     from_address,
-    ROUND(SUM(amount)::NUMERIC, 2) AS sent_amount,
-    ROUND(SUM(fee)::NUMERIC, 2) AS sent_fee,
+    SUM(amount) AS sent_amount,
+    SUM(fee) AS sent_fee,
     COUNT(*) AS sent_txn_count
   FROM kag_txns
   GROUP BY 1
@@ -57,7 +57,7 @@ WITH sent_amounts AS (
 received_amounts AS (
     SELECT
       to_address,
-      ROUND(SUM(amount)::NUMERIC, 2) AS received_amount,
+      SUM(amount) AS received_amount,
       COUNT(*) AS received_txn_count
     FROM kag_txns
     GROUP BY 1
